@@ -22,7 +22,7 @@ def create_daily_pollution_df(df):
     return daily_pollution_df
 
 def create_avg_pollutants_df(df):
-    avg_pollutants_df = df.drop('datetime', axis=1)
+    avg_pollutants_df = df.drop('datetime', axis=1, errors='ignore')  # Ignore error if datetime is not found
     avg_pollutants_df = avg_pollutants_df.apply(pd.to_numeric, errors='coerce')
     avg_pollutants_df = avg_pollutants_df.mean().reset_index()
     avg_pollutants_df.columns = ["pollutant", "average_level"]
@@ -43,7 +43,11 @@ except FileNotFoundError:
     st.stop()
 
 # Ensure datetime columns are in datetime format
-all_df['datetime'] = pd.to_datetime(all_df['datetime'], errors='coerce')
+if 'datetime' in all_df.columns:
+    all_df['datetime'] = pd.to_datetime(all_df['datetime'], errors='coerce')
+else:
+    st.warning("Kolom 'datetime' tidak ditemukan dalam data. Membuat kolom datetime secara manual.")
+    all_df['datetime'] = pd.date_range(start='2024-01-01', periods=len(all_df), freq='D')
 
 # Create filters
 min_date = all_df["datetime"].min()
