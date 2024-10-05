@@ -36,7 +36,7 @@ def create_pollutants_by_station_df(df):
 
 # Load data
 try:
-    all_df = pd.read_csv(r'./All Data.csv')
+    all_df = pd.read_csv(r'./dashboard/All Data.csv')
 except FileNotFoundError:
     st.error("File not found. Please check the file path.")
     st.stop()
@@ -135,5 +135,35 @@ with col5:
 with col6:
     avg_o3 = round(main_df["O3"].mean(), 2)
     st.metric("Average O3", value=avg_o3)
+
+# Question 1: Correlation between O3 and Temperature
+if 'TEMP' in main_df.columns:
+    correlation = main_df[['O3', 'TEMP']].corr().iloc[0, 1]
+    st.subheader("Korelasi antara O3 dan Suhu (TEMP)")
+    st.write(f"Korelasi: {correlation:.2f}")
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+    ax.scatter(main_df['O3'], main_df['TEMP'], alpha=0.5)
+    ax.set_title('Scatter Plot antara O3 dan Suhu (TEMP)')
+    ax.set_xlabel('Konsentrasi O3 (µg/m³)')
+    ax.set_ylabel('Temperatur (°C)')
+    ax.grid()
+    st.pyplot(fig)
+else:
+    st.write("Data untuk suhu (TEMP) tidak tersedia.")
+
+# Question 2: Correlation Matrix between Temperature and Dew Point
+if 'DEWP' in main_df.columns:
+    st.subheader("Matriks Korelasi antara Suhu dan Titik Embun")
+
+    corr_matrix_humidity_temp = main_df[['TEMP', 'DEWP']].corr()
+    
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(corr_matrix_humidity_temp, annot=True, cmap='coolwarm', fmt=".2f", 
+                cbar_kws={"label": "Koefisien Korelasi"})
+    plt.title('Matriks Korelasi antara Suhu dan Titik Embun')
+    st.pyplot(plt.gcf())  # Show the current figure in Streamlit
+else:
+    st.write("Data untuk titik embun (DEWP) tidak tersedia.")
 
 st.caption('Copyright (c) Nathania - Dicoding 2024')
