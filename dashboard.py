@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 
-# Set style for seaborn
 sns.set(style='dark')
 
 # Define helper functions
@@ -37,7 +36,7 @@ def create_pollutants_by_station_df(df):
 
 # Load data
 try:
-    all_df = pd.read_csv(r'./All Data.csv')
+    all_df = pd.read_csv(r'./dashboard/All Data.csv')
 except FileNotFoundError:
     st.error("File not found. Please check the file path.")
     st.stop()
@@ -57,7 +56,7 @@ with st.sidebar:
     )
 
 main_df = all_df[(all_df["datetime"] >= str(start_date)) & 
-                  (all_df["datetime"] <= str(end_date))]
+                (all_df["datetime"] <= str(end_date))]
 
 # Create DataFrames for visualization
 daily_pollution_df = create_daily_pollution_df(main_df)
@@ -105,37 +104,6 @@ else:
     st.subheader("Pollutants by Station")
     st.write("No station data available.")
 
-# Question 1: O3 and Temperature Correlation
-st.subheader("Correlation between O3 and Temperature (TEMP)")
-
-# Calculate correlation
-correlation = main_df[['O3', 'TEMP']].corr()
-st.write("Korelasi antara O3 dan suhu (TEMP):")
-st.write(correlation)
-
-# Scatter plot for O3 and TEMP
-fig, ax = plt.subplots(figsize=(12, 6))
-ax.scatter(main_df['O3'], main_df['TEMP'], alpha=0.5)
-ax.set_title('Scatter Plot antara O3 dan Suhu (TEMP)')
-ax.set_xlabel('Konsentrasi O3 (µg/m³)')
-ax.set_ylabel('Suhu (°C)')
-ax.grid()
-st.pyplot(fig)
-
-# Question 2: Correlation between Dew Point (DEWP) and Temperature (TEMP)
-st.subheader("Correlation between Dew Point (DEWP) and Temperature (TEMP)")
-
-# Calculate correlation matrix
-corr_matrix_humidity_temp = main_df[['TEMP', 'DEWP']].corr()
-
-# Heatmap for DEWP and TEMP correlation
-fig, ax = plt.subplots(figsize=(8, 6))
-sns.heatmap(corr_matrix_humidity_temp, annot=True, cmap='coolwarm', fmt=".2f", 
-            cbar_kws={"label": "Correlation Coefficient"}, ax=ax)
-ax.set_title('Matriks Korelasi antara Suhu dan Titik Embun')
-st.pyplot(fig)
-
-# Pollution Data Insights
 st.subheader("Pollution Data Insights")
 
 col1, col2 = st.columns(2)
@@ -168,4 +136,4 @@ with col6:
     avg_o3 = round(main_df["O3"].mean(), 2)
     st.metric("Average O3", value=avg_o3)
 
-st.caption('Copyright (c) Rizki Kristian H. Nainggolan - Dicoding 2024')
+st.caption('Copyright (c) Nathania - Dicoding 2024')
