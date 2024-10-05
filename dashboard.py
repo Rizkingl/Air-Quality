@@ -36,7 +36,7 @@ def create_pollutants_by_station_df(df):
 
 # Load data
 try:
-    all_df = pd.read_csv(r'./dashboard/All Data.csv')
+    all_df = pd.read_csv(r'./All Data.csv')
 except FileNotFoundError:
     st.error("File not found. Please check the file path.")
     st.stop()
